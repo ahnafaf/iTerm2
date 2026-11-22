@@ -81,6 +81,7 @@ help:
 	@echo "  make watch        Build and launch with interactive r=reload q=quit loop"
 	@echo "  make test         Run unit tests"
 	@echo "  make install      Build Deployment and install to /Applications"
+	@echo "  make install-hdr  Build Deployment and install as iTerm2 HDR in ~/Applications"
 	@echo ""
 	@echo "Dependencies:"
 	@echo "  make paranoid-deps  Rebuild all native dependencies (sandboxed)"
@@ -287,6 +288,12 @@ TAGS:
 
 install: | Deployment backup-old-iterm
 	cp -R $(BUILD_DIR)/Deployment/iTerm2.app $(APPS)
+
+# Install this checkout as "iTerm2 HDR" next to the official iTerm2: own bundle identifier,
+# signed with a stable local certificate, so macOS privacy grants survive rebuilds.
+# See tools/install_hdr.sh.
+install-hdr: Deployment
+	BUILD_DIR="$(BUILD_DIR)" tools/install_hdr.sh --no-build
 
 # The code-derived string catalog is tracked at xcstrings/Localizable.xcstrings
 # (the canonical copy, owned by tools/extract_strings.sh). Xcode's per-build
