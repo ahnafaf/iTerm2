@@ -27,6 +27,7 @@
 - Don't change defaults silently.
 - Use [iTermUserDefaults userDefaults] instead of [NSUserDefaults standardUserDefaults]
 - Use `make run` to build and run a debug build.
+- To install a build for daily use as iTerm2 HDR, run `make install-hdr` (tools/install_hdr.sh). Never copy a build into ~/Applications or /Applications by hand: the copy keeps the official bundle identifier and an ad hoc signature, and macOS then keeps re-asking for Documents access (see README, “Installing a local build next to iTerm2”).
 - Never run the app without the argument `-suite suitename` where `suitename` is the last path component of the current directory. To run a development build, just do `make run`. Omitting -suite causes conflicts between the new instance of iTerm2 and the main one, where claude runs.
 - Do not use associated objects (objc_getAssociatedObject or objc_setAssociatedObject) without express written permission.
 - You should treat warnings as errors.

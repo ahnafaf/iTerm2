@@ -135,6 +135,44 @@ Code signing is disabled by default to keep contributor builds simple. To enable
 SIGNED=1 make Development
 ```
 
+#### Installing a local build next to iTerm2 (iTerm2 HDR)
+
+To use your own build day to day alongside the official iTerm2, install it with:
+
+```bash
+make install-hdr     # or tools/install_hdr.sh [--no-build]
+```
+
+This builds Deployment and installs it as `~/Applications/iTerm2 HDR.app` under its own
+bundle identifier, `com.googlecode.iterm2.hdr`, signed with a local certificate. Don't copy
+the build into place by hand: macOS stores privacy grants (Documents, Desktop, Full Disk
+Access, …) per bundle identifier and checks them against the app's signature. A copied build
+keeps the official identifier and an ad hoc signature, so macOS mixes it up with the official
+app (the shells of one are judged as the other) and treats every rebuild as a new app. The
+result is a “would like to access files in your Documents folder” prompt that keeps coming back.
+
+One-time setup, before the first install:
+
+1. Open Keychain Access (Spotlight: “Keychain Access”; it is no longer in Utilities).
+2. Keychain Access → Certificate Assistant → Create a Certificate…
+3. Name `iTerm2 Local HDR`, Identity Type **Self Signed Root**, Certificate Type **Code Signing**.
+
+The certificate shows as not trusted; that doesn't matter for local signing. On the first
+signing, macOS asks whether `codesign` may use the key: choose **Always Allow**.
+
+What the install does each time:
+
+- Signs the app with that certificate, so a privacy grant survives rebuilds.
+- Keeps the replaced install in `tmp/previous/`, and unregisters it and the raw build
+  products from LaunchServices so nothing else competes for the identifier.
+- On the first install under the new identifier, copies your iTerm2 settings
+  (`com.googlecode.iterm2`) to `com.googlecode.iterm2.hdr`. After that the two apps keep
+  separate settings.
+
+After installing, quit iTerm2 HDR (⌘Q) and reopen it. Programs started before the switch,
+for example a server left running in an old window, still count as the old identity and
+can keep prompting until they are restarted.
+
 #### Building in Xcode
 
 If you prefer building from Xcode instead of the command line:
